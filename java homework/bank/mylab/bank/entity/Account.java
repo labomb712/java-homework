@@ -1,8 +1,10 @@
 package mylab.bank.entity;
 
+import mylab.bank.exception.InsufficientBalanceException;
+
 public abstract class Account {
-    private int accountNumber;
-    private String ownerName;
+    protected int accountNumber;
+    protected String ownerName;
     protected double balance;
 
     public Account(int accountNumber, String ownerName, double balance) {
@@ -24,14 +26,20 @@ public abstract class Account {
     }
 
     public void deposit(double amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("입금액은 0보다 커야 합니다.");
+        if (amount > 0) {
+            this.balance += amount;
+            System.out.println(accountNumber + " 계좌에 " + amount + "원 입금. 현재 잔액: " + balance + "원");
         }
-        this.balance += amount;
     }
 
-    public abstract void withdraw(double amount) throws Exception;
-
+    public void withdraw(double amount) throws InsufficientBalanceException {
+        if (amount > this.balance) {
+            throw new InsufficientBalanceException("잔액이 부족합니다. 현재 잔액: " + this.balance + "원");
+        }
+        this.balance -= amount;
+        System.out.println(accountNumber + " 계좌에서 " + amount + "원 출금. 현재 잔액: " + balance + "원");
+    }
+    
     @Override
     public String toString() {
         return "계좌번호: " + accountNumber + ", 소유자: " + ownerName + ", 잔액: " + balance;

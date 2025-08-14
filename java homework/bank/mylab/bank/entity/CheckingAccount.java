@@ -11,14 +11,20 @@ public class CheckingAccount extends Account {
         this.withdrawalLimit = withdrawalLimit;
     }
 
+    public double getWithdrawalLimit() {
+        return withdrawalLimit;
+    }
+
     @Override
-    public void withdraw(double amount) throws InsufficientBalanceException, WithdrawalLimitExceededException {
+    public void withdraw(double amount) throws InsufficientBalanceException {
         if (amount > withdrawalLimit) {
-            throw new WithdrawalLimitExceededException("출금 한도를 초과했습니다.");
+            throw new WithdrawalLimitExceededException("출금 한도(" + withdrawalLimit + "원)를 초과했습니다.");
         }
-        if (amount > this.balance) {
-            throw new InsufficientBalanceException("체킹 계좌 잔액이 부족합니다.");
-        }
-        this.balance -= amount;
+        super.withdraw(amount);
+    }
+    
+    @Override
+    public String toString() {
+        return super.toString() + ", 출금 한도: " + withdrawalLimit + "원 (체킹 계좌)";
     }
 }
